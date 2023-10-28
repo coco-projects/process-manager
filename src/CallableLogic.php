@@ -1,0 +1,47 @@
+<?php
+
+    namespace Coco\processManager;
+
+final class CallableLogic extends LogicAbstract
+{
+    /**
+     * @var null|callable $callback
+     */
+    public $callback = null;
+
+    /**
+     * @param callable $callback
+     * @param string   $name
+     * @param bool     $isEnable
+     */
+    public function __construct(callable $callback, string $name = '', bool $isEnable = true)
+    {
+        $this->callback = $callback;
+        $this->setName($name);
+        $this->setIsEnable($isEnable);
+    }
+
+    /**
+     * @return null|bool
+     */
+    public function exec(): ?bool
+    {
+        return call_user_func_array($this->callback, [
+            $this->getRegistry(),
+            $this,
+        ]);
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getCallback(): ?callable
+    {
+        return $this->callback;
+    }
+
+    public static function getIns(callable $callback, string $name = '', bool $isEnable = true): static
+    {
+        return new self($callback, $name, $isEnable);
+    }
+}
