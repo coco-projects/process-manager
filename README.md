@@ -53,7 +53,7 @@ Why should I do this? The emergence of tools is inevitably to solve a certain ty
 ---
 
 ```bash
-composer require coco-project/process-manager
+composer require coco-project/process-manager --no-dev
 ```
 
 ### get started

@@ -51,7 +51,7 @@ process-manager 是个逻辑流程管理工具，它被设计为将代码中的�
 ---
 
 ```bash
-composer require coco-project/process-manager
+composer require coco-project/process-manager --no-dev
 ```
 
 ### 入门示例
