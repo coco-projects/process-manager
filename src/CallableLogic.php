@@ -2,7 +2,7 @@
 
     namespace Coco\processManager;
 
-final class CallableLogic extends LogicAbstract
+class CallableLogic extends LogicAbstract
 {
     /**
      * @var null|callable $callback
@@ -40,8 +40,15 @@ final class CallableLogic extends LogicAbstract
         return $this->callback;
     }
 
+    /**
+     * @param callable $callback
+     * @param string   $name
+     * @param bool     $isEnable
+     *
+     * @return static
+     */
     public static function getIns(callable $callback, string $name = '', bool $isEnable = true): static
     {
-        return new self($callback, $name, $isEnable);
+        return new static($callback, $name, $isEnable);
     }
 }

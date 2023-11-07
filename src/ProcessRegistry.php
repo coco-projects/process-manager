@@ -2,11 +2,12 @@
 
     namespace Coco\processManager;
 
+    use Coco\magicAccess\MagicMethod;
     use Exception;
 
 class ProcessRegistry
 {
-    use BaseTrait;
+    use MagicMethod;
 
     private array  $logicList           = [];
     private array  $beforeLogics        = [];
@@ -253,7 +254,7 @@ class ProcessRegistry
     /**
      * @param bool $isDebug
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setIsDebug(bool $isDebug): static
     {
@@ -281,7 +282,7 @@ class ProcessRegistry
     /**
      * @param LogicAbstract|null $errorLogic
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     private function setErrorLogic(?LogicAbstract $errorLogic): static
     {
@@ -301,7 +302,7 @@ class ProcessRegistry
     /**
      * @param string $resultMessage
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setResultMessage(string $resultMessage): static
     {
@@ -321,7 +322,7 @@ class ProcessRegistry
     /**
      * @param LogicAbstract|null $onStart
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setOnStart(?LogicAbstract $onStart): static
     {
@@ -341,7 +342,7 @@ class ProcessRegistry
     /**
      * @param LogicAbstract|null $onDone
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setOnDone(?LogicAbstract $onDone): static
     {
@@ -361,7 +362,7 @@ class ProcessRegistry
     /**
      * @param LogicAbstract|null $onCatch
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setOnCatch(?LogicAbstract $onCatch): static
     {
@@ -381,7 +382,7 @@ class ProcessRegistry
     /**
      * @param LogicAbstract|null $onResultIsTrue
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setOnResultIsTrue(?LogicAbstract $onResultIsTrue): static
     {
@@ -401,7 +402,7 @@ class ProcessRegistry
     /**
      * @param LogicAbstract|null $onResultIsFalse
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     public function setOnResultIsFalse(?LogicAbstract $onResultIsFalse): static
     {
@@ -524,7 +525,7 @@ class ProcessRegistry
     /**
      * @param bool $result
      *
-     * @return ProcessRegistry
+     * @return $this
      */
     private function setResult(bool $result): static
     {

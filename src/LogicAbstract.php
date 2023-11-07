@@ -2,9 +2,11 @@
 
     namespace Coco\processManager;
 
+use Coco\magicAccess\MagicMethod;
+
 abstract class LogicAbstract
 {
-    use BaseTrait;
+    use MagicMethod;
 
     protected string             $name         = '';
     protected string             $msg          = '';

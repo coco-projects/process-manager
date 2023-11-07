@@ -7,8 +7,10 @@
 
     require '../vendor/autoload.php';
 
-    $registry          = new ProcessRegistry();
-    $registry->testMsg = 123;
+    $registry = new ProcessRegistry();
+
+    $registry->testMsg         = [];
+    $registry->testMsg['data'] = 123;
 
     $registry->setIsDebug(!true);
 
@@ -212,7 +214,7 @@
     echo "-done";
     echo PHP_EOL;
 
-    echo $registry->testMsg;
+    print_r($registry->testMsg);;;
     echo PHP_EOL;
 
     echo $registry->getResultMessage();
