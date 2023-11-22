@@ -7,7 +7,7 @@ class CallableLogic extends LogicAbstract
     /**
      * @var null|callable $callback
      */
-    public $callback = null;
+    protected $callback = null;
 
     /**
      * @param callable $callback
