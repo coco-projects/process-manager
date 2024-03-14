@@ -27,13 +27,7 @@ abstract class LogicAbstract
     public function run(): bool
     {
         //执行闭包
-        $result = call_user_func_array([
-            $this,
-            'exec',
-        ], [
-            $this->getRegistry(),
-            $this,
-        ]);
+        $result = call_user_func_array([$this, 'exec'], []);
 
         if ($result !== false) {
             $result = true;
