@@ -88,6 +88,92 @@
         //return false;
     }, 'prependLogic_1'));
 
+
+
+
+    $registry->injectLogicBatchBefore([
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('apendLogic_1_before-debugMsg');
+            $logic->setMsg('apendLogic_1_before-msg');
+            echo 'logicName : apendLogic_1_before : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('apendLogic_2_before-debugMsg');
+            $logic->setMsg('apendLogic_2_before-msg');
+            echo 'logicName : apendLogic_2_before : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+
+    ], 'apendLogic_1_before');
+
+    $registry->injectLogicBatchAfter([
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('apendLogic_1_after-debugMsg');
+            $logic->setMsg('apendLogic_1_after-msg');
+            echo 'logicName : apendLogic_1_after : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('apendLogic_2_after-debugMsg');
+            $logic->setMsg('apendLogic_2_after-msg');
+            echo 'logicName : apendLogic_2_after : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+    ], 'apendLogic_2_after');
+
+    $registry->injectLogicBatchTop([
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('topLogic_1-debugMsg');
+            $logic->setMsg('topLogic_1-msg');
+            echo 'logicName : topLogic_1 : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('topLogic_2-debugMsg');
+            $logic->setMsg('topLogic_2-msg');
+            echo 'logicName : topLogic_2 : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+
+    ]);
+
+    $registry->injectLogicBatchEnd([
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('endLogic_1-debugMsg');
+            $logic->setMsg('endLogic_1-msg');
+            echo 'logicName : endLogic_1 : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+
+        CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
+            $logic->setDebugMsg('endLogic_2-debugMsg');
+            $logic->setMsg('endLogic_2-msg');
+            echo 'logicName : endLogic_2 : ' . $logic->getName();
+            echo PHP_EOL;
+
+            //return false;
+        }),
+
+    ]);
+
+
     $registry->if(
 
         CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
@@ -180,23 +266,6 @@
         //return false;
     }, 'apendLogic_2'));
 
-    $registry->injectLogicBefore(CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
-        $logic->setDebugMsg('apendLogic_2_before-debugMsg');
-        $logic->setMsg('apendLogic_2_before-msg');
-        echo 'logicName : apendLogic_2_before : ' . $logic->getName();
-        echo PHP_EOL;
-
-        //return false;
-    }, 'apendLogic_2_before'), 'apendLogic_2');
-
-    $registry->injectLogicAfter(CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
-        $logic->setDebugMsg('apendLogic_2_after-debugMsg');
-        $logic->setMsg('apendLogic_2_after-msg');
-        echo 'logicName : apendLogic_2_after : ' . $logic->getName();
-        echo PHP_EOL;
-
-        //        return false;
-    }, 'apendLogic_2_after'), 'apendLogic_2');
 
     $registry->prependLogic(CallableLogic::getIns(function(ProcessRegistry $registry, CallableLogic $logic) {
         $logic->setDebugMsg('prependLogic_2-debugMsg');

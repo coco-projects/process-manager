@@ -338,24 +338,6 @@ final class ProcessRegistryTest extends TestCase
             //return false;
         }, 'prependLogic_1'));
 
-        $registry->injectLogicBefore(CallableLogic::getIns(function (ProcessRegistry $registry, CallableLogic $logic) {
-            $logic->setDebugMsg('apendLogic_2_before-debugMsg');
-            $logic->setMsg('apendLogic_2_before-msg');
-
-            $registry->val[] = 11;
-
-            //return false;
-        }, 'apendLogic_2_before'), 'Logic_1');
-
-        $registry->injectLogicAfter(CallableLogic::getIns(function (ProcessRegistry $registry, CallableLogic $logic) {
-            $logic->setDebugMsg('apendLogic_2_after-debugMsg');
-            $logic->setMsg('apendLogic_2_after-msg');
-
-            $registry->val[] = 12;
-
-            //        return false;
-        }, 'apendLogic_2_after'), 'Logic_1');
-
         $registry->executeLogics();
 
         $expect = [

@@ -9,9 +9,14 @@ class ProcessRegistry
 {
     use MagicMethod;
 
-    private array  $logicList           = [];
-    private array  $beforeLogics        = [];
-    private array  $afterLogics         = [];
+    private array $logicList = [];
+
+    private array $beforeLogics = [];
+    private array $afterLogics  = [];
+
+    private array $topLogics = [];
+    private array $endLogics = [];
+
     private array  $replaceLogicsMap    = [];
     private array  $invokedLogics       = [];
     private bool   $isDebug             = false;
@@ -29,6 +34,145 @@ class ProcessRegistry
     private ?LogicAbstract $onResultIsFalse = null;
 
     const LOGIC_PREFIX = "LOGIC_";
+
+    /**
+     * @return array
+     */
+    public function getLogicList(): array
+    {
+        return $this->logicList;
+    }
+
+    /**
+     * @param LogicAbstract $logic
+     *
+     * @return $this
+     */
+    public function apendLogic(LogicAbstract $logic): static
+    {
+        $this->pushLogicToList($this->initLogic($logic));
+
+        return $this;
+    }
+
+    /**
+     * @param LogicAbstract $logic
+     *
+     * @return $this
+     */
+    public function prependLogic(LogicAbstract $logic): static
+    {
+        $this->unshiftLogicToList($this->initLogic($logic));
+
+        return $this;
+    }
+
+    /**
+     * @param array  $logics
+     * @param string $logicName
+     *
+     * @return $this
+     */
+    public function injectLogicBatchBefore(array $logics, string $logicName): static
+    {
+        if (!isset($this->beforeLogics[$logicName])) {
+            $this->beforeLogics[$logicName] = [];
+        }
+
+        foreach ($logics as $k => $v) {
+            $this->beforeLogics[$logicName][] = $this->initLogic($v);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array  $logics
+     * @param string $logicName
+     *
+     * @return $this
+     */
+    public function injectLogicBatchAfter(array $logics, string $logicName): static
+    {
+        if (!isset($this->afterLogics[$logicName])) {
+            $this->afterLogics[$logicName] = [];
+        }
+
+        foreach ($logics as $k => $v) {
+            $this->afterLogics[$logicName][] = $this->initLogic($v);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param LogicAbstract      $condition
+     * @param LogicAbstract      $ifCallback
+     * @param LogicAbstract|null $elseCallback
+     *
+     * @return $this
+     */
+    public function if(LogicAbstract $condition, LogicAbstract $ifCallback, ?LogicAbstract $elseCallback = null): static
+    {
+        $condition  = $this->initLogic($condition);
+        $ifCallback = $this->initLogic($ifCallback);
+        ($elseCallback instanceof LogicAbstract) and ($elseCallback = $this->initLogic($elseCallback));
+
+        $this->addInnerLogic(CallableLogic::getIns(function (ProcessRegistry $registry, CallableLogic $logic) use ($condition, $ifCallback, $elseCallback) {
+            if ($condition->run() !== false) {
+                $this->unshiftLogicToList($ifCallback);
+            } else {
+                if ($elseCallback instanceof LogicAbstract) {
+                    $this->unshiftLogicToList($elseCallback);
+                }
+            }
+        }));
+
+        return $this;
+    }
+
+    /**
+     * @param LogicAbstract $logic
+     *
+     * @return $this
+     */
+    public function replaceLogic(LogicAbstract $logic): static
+    {
+        $this->replaceLogicsMap[$logic->getName()] = $this->initLogic($logic);
+
+        return $this;
+    }
+
+
+    /**
+     * @param array $logics
+     *
+     * @return $this
+     */
+    public function injectLogicBatchTop(array $logics): static
+    {
+        foreach ($logics as $k => $v) {
+            $this->topLogics[] = $this->initLogic($v);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param array $logics
+     *
+     * @return $this
+     */
+    public function injectLogicBatchEnd(array $logics): static
+    {
+        foreach ($logics as $k => $v) {
+            $this->endLogics[] = $this->initLogic($v);
+        }
+
+        return $this;
+    }
+
 
     /**
      * @return bool
@@ -131,102 +275,6 @@ class ProcessRegistry
     public function totalLogics(): int
     {
         return count($this->logicList);
-    }
-
-    /**
-     * @return array
-     */
-    public function getLogicList(): array
-    {
-        return $this->logicList;
-    }
-
-    /**
-     * @param LogicAbstract $logic
-     *
-     * @return $this
-     */
-    public function apendLogic(LogicAbstract $logic): static
-    {
-        $this->pushLogicToList($this->initLogic($logic));
-
-        return $this;
-    }
-
-    /**
-     * @param LogicAbstract $logic
-     *
-     * @return $this
-     */
-    public function prependLogic(LogicAbstract $logic): static
-    {
-        $this->unshiftLogicToList($this->initLogic($logic));
-
-        return $this;
-    }
-
-    /**
-     * @param LogicAbstract $logic
-     * @param string        $logicName
-     *
-     * @return $this
-     */
-    public function injectLogicBefore(LogicAbstract $logic, string $logicName): static
-    {
-        $this->beforeLogics[$logicName] = $this->initLogic($logic);
-
-        return $this;
-    }
-
-    /**
-     * @param LogicAbstract $logic
-     * @param string        $logicName
-     *
-     * @return $this
-     */
-    public function injectLogicAfter(LogicAbstract $logic, string $logicName): static
-    {
-        $this->afterLogics[$logicName] = $this->initLogic($logic);
-
-        return $this;
-    }
-
-    /**
-     * @param LogicAbstract      $condition
-     * @param LogicAbstract      $ifCallback
-     * @param LogicAbstract|null $elseCallback
-     *
-     * @return $this
-     */
-    public function if(LogicAbstract $condition, LogicAbstract $ifCallback, ?LogicAbstract $elseCallback = null): static
-    {
-        $condition  = $this->initLogic($condition);
-        $ifCallback = $this->initLogic($ifCallback);
-        ($elseCallback instanceof LogicAbstract) and ($elseCallback = $this->initLogic($elseCallback));
-
-        $this->addInnerLogic(CallableLogic::getIns(function (ProcessRegistry $registry, CallableLogic $logic) use ($condition, $ifCallback, $elseCallback) {
-            if ($condition->run() !== false) {
-                $this->unshiftLogicToList($ifCallback);
-            } else {
-                if ($elseCallback instanceof LogicAbstract) {
-                    $this->unshiftLogicToList($elseCallback);
-                }
-            }
-        }));
-
-        return $this;
-    }
-
-    /**
-     * @param LogicAbstract $logic
-     *
-     * @return $this
-     */
-    public function replaceLogic(LogicAbstract $logic): static
-    {
-        $this->replaceLogicsMap[$logic->getName()] = $this->initLogic($logic);
-
-        return $this;
     }
 
 
@@ -493,24 +541,38 @@ class ProcessRegistry
     private function integrateLogicList(): void
     {
         $t = [];
-        foreach ($this->logicList as $k => $logic) {
-            if (isset($this->beforeLogics[$k])) {
-                $temp_ = $this->beforeLogics[$k];
+        if (isset($this->topLogics)) {
+            foreach ($this->topLogics as $logicTop) {
+                $t[$logicTop->getName()] = $logicTop;
+            }
+        }
 
-                $t[$temp_->getName()] = $temp_;
+        foreach ($this->logicList as $logicName => $logic) {
+            if (isset($this->beforeLogics[$logicName])) {
+                foreach ($this->beforeLogics[$logicName] as $logic_) {
+                    $t[$logic_->getName()] = $logic_;
+                }
             }
 
-            $t[$k] = $logic;
+            $t[$logicName] = $logic;
 
-            if (isset($this->afterLogics[$k])) {
-                $temp_ = $this->afterLogics[$k];
+            if (isset($this->afterLogics[$logicName])) {
+                foreach ($this->afterLogics[$logicName] as $logic_) {
+                    $t[$logic_->getName()] = $logic_;
+                }
+            }
+        }
 
-                $t[$temp_->getName()] = $temp_;
+        if (isset($this->endLogics)) {
+            foreach ($this->endLogics as $logicEnd) {
+                $t[$logicEnd->getName()] = $logicEnd;
             }
         }
 
         $this->beforeLogics = [];
         $this->afterLogics  = [];
+        $this->topLogics    = [];
+        $this->endLogics    = [];
         $this->logicList    = $t;
     }
 
