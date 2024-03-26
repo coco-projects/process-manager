@@ -357,7 +357,7 @@ class ProcessRegistry
      *
      * @return $this
      */
-    public function setResultMessage(string $resultMessage): static
+    protected function setResultMessage(string $resultMessage): static
     {
         $this->resultMessage = $resultMessage;
 
