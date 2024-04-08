@@ -246,10 +246,9 @@ class ProcessRegistry
 
             if ($this->isDebug()) {
                 $msg = implode('', [
-                    'Exception by mission:[' . $logicToRun->getName() . ']，',
-                    'file:[' . $e->getFile() . ']，',
-                    'line:[' . $e->getLine() . ']，',
-                    'msg:[' . $e->getMessage() . ']',
+                    'Exception by:[' . $logicToRun->getName() . '],',
+                    '[' . $e->getFile() .'('. $e->getLine() . ')],',
+                    '[' . $e->getMessage() . ']',
                 ]);
             } else {
                 $msg = $logicToRun->getMsg();
